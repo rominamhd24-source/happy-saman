@@ -1,4 +1,4 @@
-        <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,82 +6,192 @@
     <title>A Package for You!</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        body { font-family: sans-serif; background: #e0e0e0; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .container { background: white; padding: 20px; border-radius: 20px; text-align: center; max-width: 500px; width: 90%; }
-        .media-box { width: 100%; height: 280px; object-fit: cover; border-radius: 10px; background: #eee; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            overflow: hidden;
+        }
+        .container { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 24px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12); 
+            text-align: center; 
+            max-width: 500px; 
+            width: 90%; 
+            animation: popUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popUp {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .media-box { 
+            width: 100%; 
+            height: 280px; 
+            object-fit: cover; 
+            border-radius: 12px; 
+            background: #eee; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        h2 { color: #333; margin: 20px 0; font-size: 20px; line-height: 1.4; min-height: 56px; }
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        button { 
+            padding: 14px 30px; 
+            font-size: 16px; 
+            border: none; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+            font-weight: bold; 
+        }
+        .btn-yes { background: linear-gradient(135deg, #4CAF50, #45a049); color: white; box-shadow: 0 4px 15px rgba(76,175,80,0.3); }
+        .btn-yes:hover { transform: translateY(-2px); }
+        .btn-no { background: linear-gradient(135deg, #f44336, #da190b); color: white; box-shadow: 0 4px 15px rgba(244,67,54,0.3); }
+        .btn-no:hover { transform: translateY(-2px); }
+        .btn-door { background: linear-gradient(135deg, #2196F3, #1976D2); color: white; box-shadow: 0 4px 15px rgba(33,150,243,0.3); width: 100%; }
+        .btn-door:hover { transform: scale(1.03); }
         .hidden { display: none; }
-        button { padding: 15px 30px; cursor: pointer; border-radius: 10px; border: none; background: #2196F3; color: white; font-weight: bold; }
+        .shake { animation: shake 0.5s; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
     </style>
 </head>
 <body>
 
-<!-- فایل‌های صوتی -->
+<!-- افکت‌های صوتی پیش‌فرض -->
 <audio id="knockSound" loop><source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-84.mp3" type="audio/mp3"></audio>
 <audio id="doorOpenSound"><source src="https://assets.mixkit.co/active_storage/sfx/276/276-84.mp3" type="audio/mp3"></audio>
 
 <div class="container" id="card">
+    <!-- مرحله ۰: در ورودی چوبی (عکس ثابت) -->
     <div id="step0">
-        <img src="door.png" class="media-box">
-        <h2>Someone is knocking...</h2>
-        <button onclick="startExperience()">Open the Door 🚪</button>
+        <img src="door.png" class="media-box" alt="Wooden Door">
+        <h2>Someone is knocking on your screen... ✊🚪</h2>
+        <button class="btn-door" onclick="startExperience()">Open the Door 🚪</button>
     </div>
 
+    <!-- مرحله ۱: سوال اول اسم (ویدیو سخنگو) -->
     <div id="step1" class="hidden">
         <video id="vid1" class="media-box" playsinline>
             <source src="postman_name.mp4" type="video/mp4">
         </video>
-        <h2>Are you Saman?</h2>
-        <button onclick="nextStep(1, 2)">Yes</button>
-        <button onclick="wrongAnswer()">No</button>
+        <h2 id="text1">Hi there! Are you Saman?</h2>
+        <div class="btn-group">
+            <button class="btn-yes" onclick="nextStep(1, 2)">Yes</button>
+            <button class="btn-no" onclick="wrongAnswer()">No</button>
+        </div>
     </div>
 
+    <!-- مرحله ۲: سوال دوم فامیل (ویدیو) -->
     <div id="step2" class="hidden">
         <video id="vid2" class="media-box" playsinline>
             <source src="postman_lastname.mp4" type="video/mp4">
         </video>
-        <h2>Is your last name Yaseri?</h2>
-        <button onclick="nextStep(2, 3)">Yes</button>
+        <h2>And your last name is Yaseri, right?</h2>
+        <div class="btn-group">
+            <button class="btn-yes" onclick="nextStep(2, 3)">Yes</button>
+        </div>
     </div>
     
+    <!-- مرحله ۳: تحویل جعبه کادو (ویدیو) -->
     <div id="step3" class="hidden">
-        <video id="vid3" class="media-box" playsinline onclick="openGift()">
+        <video id="vid3" class="media-box" playsinline style="cursor: pointer;" onclick="openGift()">
             <source src="postman_delivery.mp4" type="video/mp4">
         </video>
-        <h2>Click the video to get your gift!</h2>
+        <h2>Perfect! Here is your package. 📦<br><span style="font-size: 14px; color:#666; font-weight: normal;">Click the video to open!</span></h2>
     </div>
 
+    <!-- مرحله ۴: ویدیوی کمدی نهایی (سورپرایز) -->
     <div id="step4" class="hidden">
-        <img src="surprise.png" class="media-box">
-        <h2>Happy Birthday! 🎂</h2>
+        <video id="vid4" class="media-box" playsinline controls>
+            <source src="surprise_comedy.mp4" type="video/mp4">
+        </video>
+        <h2 style="color: #e91e63; margin-top: 20px; font-size: 24px; font-weight: bold;">Happy Birthday, my dearest! 🎂✨</h2>
     </div>
 </div>
 
 <script>
+    // فعال‌سازی صدای در زدن به محض لود شدن اولیه صفحه (با تعامل اول کاربر)
+    window.addEventListener('click', () => {
+        const knock = document.getElementById('knockSound');
+        if(!knock.paused) return;
+        knock.play().catch(e => console.log("Autoplay blocked"));
+    }, {once: true});
+
     function startExperience() {
-        document.getElementById('knockSound').play(); // شروع صدا
+        // قطع صدای در زدن و پخش صدای باز شدن در واقعی
+        document.getElementById('knockSound').pause(); 
         document.getElementById('doorOpenSound').play();
-        document.getElementById('step0').classList.add('hidden');
-        document.getElementById('step1').classList.remove('hidden');
-        document.getElementById('vid1').play(); // پخش ویدیو با صدا
+        
+        setTimeout(() => {
+            document.getElementById('step0').classList.add('hidden');
+            document.getElementById('step1').classList.remove('hidden');
+            document.getElementById('vid1').play(); // شروع ویدیوی اول با صدا
+        }, 600); 
     }
 
     function nextStep(current, next) {
-        document.getElementById('step'+current).classList.add('hidden');
-        document.getElementById('step'+next).classList.remove('hidden');
-        const v = document.getElementById('vid'+next);
-        if(v) v.play();
+        // متوقف کردن ویدیوی مرحله قبل
+        const currentVid = document.getElementById('vid' + current);
+        if(currentVid) currentVid.pause();
+
+        document.getElementById('step' + current).classList.add('hidden');
+        document.getElementById('step' + next).classList.remove('hidden');
+        
+        // پخش ویدیوی مرحله بعد
+        const nextVid = document.getElementById('vid' + next);
+        if(nextVid) nextVid.play();
+        
+        document.getElementById('card').classList.remove('shake');
     }
 
     function wrongAnswer() {
-        const v = document.getElementById('vid1');
-        v.src = "postman_suspicious.mp4"; // تغییر ویدیو به مچ‌گیری
-        v.play();
+        const card = document.getElementById('card');
+        card.classList.add('shake');
+        
+        // تغییر ویدیو به حالت مشکوک و مچ‌گیری
+        const v1 = document.getElementById('vid1');
+        v1.src = "postman_suspicious.mp4";
+        v1.play();
+        
+        const h2 = document.getElementById('text1');
+        h2.innerHTML = "Don't lie to me! 🕵️‍♂️ Click YES.";
+        h2.style.color = '#d32f2f';
+        
+        setTimeout(() => { card.classList.remove('shake'); }, 500);
     }
 
     function openGift() {
-        confetti();
-        document.getElementById('step3').classList.add('hidden');
-        document.getElementById('step4').classList.remove('hidden');
+        // افکت جذاب کنفتی/جشن
+        confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+
+        setTimeout(() => {
+            document.getElementById('step3').classList.add('hidden');
+            document.getElementById('step4').classList.remove('hidden');
+            document.getElementById('vid4').play(); // پخش خودکار ویدیوی کمدی نهایی
+            
+            // تکرار افکت جشن برای ۵ ثانیه بعدی
+            var duration = 5 * 1000;
+            var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 } });
+                confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 } });
+                if (Date.now() < end) { requestAnimationFrame(frame); }
+            }());
+        }, 300);
     }
 </script>
 
