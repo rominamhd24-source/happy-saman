@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Package for You!</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: popUp 0.6s ease-out;
+        }
+        @keyframes popUp {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        h2 { color: #333; margin-bottom: 20px; font-size: 22px; }
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            font-weight: bold;
+        }
+        .btn-yes { background-color: #4CAF50; color: white; }
+        .btn-yes:hover { transform: scale(1.05); background-color: #45a049; }
+        .btn-no { background-color: #f44336; color: white; }
+        .btn-no:hover { transform: scale(1.05); background-color: #da190b; }
+        .hidden { display: none; }
+        .shake { animation: shake 0.5s; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+        /* استایل ویدیو یا عکس نهایی */
+        video, .final-img {
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="card">
+    <div id="step1">
+        <img src="postman1.png" alt="Postman">
+        <h2>Hi there! Are you Saman?</h2>
+        <div class="btn-group">
+            <button class="btn-yes" onclick="nextStep(2)">Yes</button>
+            <button class="btn-no" onclick="wrongAnswer(1)">No</button>
+        </div>
+    </div>
+
+    <div id="step2" class="hidden">
+        <img src="postman1.png" alt="Postman">
+        <h2>And your last name is Yaseri, right?</h2>
+        <div class="btn-group">
+            <button class="btn-yes" onclick="nextStep(3)">Yes</button>
+            <button class="btn-no" onclick="wrongAnswer(2)">No</button>
+        </div>
+    </div>
+
+    <div id="step3" class="hidden">
+        <img src="box.png" alt="Gift Box" style="cursor: pointer; transition: transform 0.3s;" onclick="openGift()" id="giftBox">
+        <h2>Perfect! You have a package. 📦<br><span style="font-size: 16px; color:#666;">Click the box to open!</span></h2>
+    </div>
+
+    <div id="step4" class="hidden">
+        <img src="surprise.png" class="final-img" alt="Surprise">
+        
+        <h2 style="color: #e91e63; margin-top: 20px;">Happy Birthday, my dearest! 🎂✨</h2>
+    </div>
+</div>
+
+<script>
+    function nextStep(step) {
+        // مخفی کردن همه مراحل
+        document.getElementById('step1').classList.add('hidden');
+        document.getElementById('step2').classList.add('hidden');
+        document.getElementById('step3').classList.add('hidden');
+        
+        // نشان دادن مرحله بعد
+        document.getElementById('step' + step).classList.remove('hidden');
+        document.getElementById('card').classList.remove('shake');
+    }
+
+    function wrongAnswer(currentStep) {
+        const card = document.getElementById('card');
+        card.classList.add('shake');
+        
+        // تغییر موقت متن به پیام دروغ نگو
+        const h2 = document.querySelector('#step' + currentStep + ' h2');
+        const originalText = h2.innerHTML;
+        h2.innerHTML = "Don't lie to me! 🕵️‍♂️ Click YES.";
+        h2.style.color = 'red';
+        
+        setTimeout(() => {
+            card.classList.remove('shake');
+        }, 500);
+    }
+
+    function openGift() {
+        const box = document.getElementById('giftBox');
+        box.style.transform = 'scale(1.5) rotate(10deg)';
+        setTimeout(() => {
+            document.getElementById('step3').classList.add('hidden');
+            document.getElementById('step4').classList.remove('hidden');
+            // اینجا افکت پخش کاغذ رنگی یا موزیک هم میشه اضافه کرد
+        }, 500);
+    }
+</script>
+
+</body>
+</html>
