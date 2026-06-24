@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+        <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -25,6 +25,8 @@
             max-width: 500px; 
             width: 90%; 
             animation: popUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            z-index: 2;
         }
         @keyframes popUp {
             0% { transform: scale(0.8); opacity: 0; }
@@ -38,21 +40,37 @@
             background: #eee; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.08);
         }
-        h2 { color: #333; margin: 20px 0; font-size: 20px; line-height: 1.4; min-height: 56px; }
-        .btn-group {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 10px;
+        
+        /* استایل مخصوص تمام‌صفحه شدن ویدیوی عمودی آخر */
+        .fullscreen-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: contain; /* برای اینکه ویدیوی عمودی دفرمه نشود اما تمام صفحه را بگیرد */
+            background: black;
+            z-index: 9999;
         }
+        .fullscreen-text {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            z-index: 10000;
+            font-size: 26px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+        }
+
+        h2 { color: #333; margin: 20px 0; font-size: 20px; line-height: 1.4; min-height: 56px; }
+        .btn-group { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
         button { 
-            padding: 14px 30px; 
-            font-size: 16px; 
-            border: none; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            transition: all 0.2s ease; 
-            font-weight: bold; 
+            padding: 14px 30px; font-size: 16px; border: none; border-radius: 12px; 
+            cursor: pointer; transition: all 0.2s ease; font-weight: bold; 
         }
         .btn-yes { background: linear-gradient(135deg, #4CAF50, #45a049); color: white; box-shadow: 0 4px 15px rgba(76,175,80,0.3); }
         .btn-yes:hover { transform: translateY(-2px); }
@@ -71,19 +89,23 @@
 </head>
 <body>
 
-<!-- افکت‌های صوتی پیش‌فرض -->
 <audio id="knockSound" loop><source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-84.mp3" type="audio/mp3"></audio>
 <audio id="doorOpenSound"><source src="https://assets.mixkit.co/active_storage/sfx/276/276-84.mp3" type="audio/mp3"></audio>
+<audio id="birthdayMusic" loop><source src="https://scummbar.com/mi2/MI1-CD/01%20-%20Opening%20Themes%20-%20Introduction.mp3" type="audio/mp3"></audio>
 
-<div class="container" id="card">
-    <!-- مرحله ۰: در ورودی چوبی (عکس ثابت) -->
+<div class="container" id="welcomeStep">
+    <h2>You have a pending delivery! 📦</h2>
+    <p style="color: #666; margin-bottom: 20px;">Please click below to check your front door.</p>
+    <button class="btn-door" onclick="unlockAudio()">Enter Site 🔓</button>
+</div>
+
+<div class="container hidden" id="card">
     <div id="step0">
         <img src="door.png" class="media-box" alt="Wooden Door">
         <h2>Someone is knocking on your screen... ✊🚪</h2>
         <button class="btn-door" onclick="startExperience()">Open the Door 🚪</button>
     </div>
 
-    <!-- مرحله ۱: سوال اول اسم (ویدیو سخنگو) -->
     <div id="step1" class="hidden">
         <video id="vid1" class="media-box" playsinline>
             <source src="postman_name.mp4" type="video/mp4">
@@ -95,7 +117,6 @@
         </div>
     </div>
 
-    <!-- مرحله ۲: سوال دوم فامیل (ویدیو) -->
     <div id="step2" class="hidden">
         <video id="vid2" class="media-box" playsinline>
             <source src="postman_lastname.mp4" type="video/mp4">
@@ -106,30 +127,30 @@
         </div>
     </div>
     
-    <!-- مرحله ۳: تحویل جعبه کادو (ویدیو) -->
     <div id="step3" class="hidden">
         <video id="vid3" class="media-box" playsinline style="cursor: pointer;" onclick="openGift()">
             <source src="postman_delivery.mp4" type="video/mp4">
         </video>
         <h2>Perfect! Here is your package. 📦<br><span style="font-size: 14px; color:#666; font-weight: normal;">Click the video to open!</span></h2>
     </div>
+</div>
 
-    <!-- مرحله ۴: ویدیوی کمدی نهایی (سورپرایز) -->
-    <div id="step4" class="hidden">
-        <video id="vid4" class="media-box" playsinline controls>
-            <source src="surprise_comedy.mp4" type="video/mp4">
-        </video>
-        <h2 style="color: #e91e63; margin-top: 20px; font-size: 24px; font-weight: bold;">Happy Birthday, my dearest! 🎂✨</h2>
-    </div>
+<div id="step4" class="hidden">
+    <video id="vid4" class="fullscreen-video" playsinline>
+        <source src="surprise_comedy.mp4" type="video/mp4">
+    </video>
+    <div class="fullscreen-text">Happy Birthday, my dearest! 🎂✨</div>
 </div>
 
 <script>
-    // فعال‌سازی صدای در زدن به محض لود شدن اولیه صفحه (با تعامل اول کاربر)
-    window.addEventListener('click', () => {
+    // قدم اول: شکستن قفل صدا و شروع افکت در زدن
+    function unlockAudio() {
+        document.getElementById('welcomeStep').classList.add('hidden');
+        document.getElementById('card').classList.remove('hidden');
+        
         const knock = document.getElementById('knockSound');
-        if(!knock.paused) return;
-        knock.play().catch(e => console.log("Autoplay blocked"));
-    }, {once: true});
+        knock.play().catch(e => console.log("Audio play blocked"));
+    }
 
     function startExperience() {
         // قطع صدای در زدن و پخش صدای باز شدن در واقعی
@@ -139,19 +160,17 @@
         setTimeout(() => {
             document.getElementById('step0').classList.add('hidden');
             document.getElementById('step1').classList.remove('hidden');
-            document.getElementById('vid1').play(); // شروع ویدیوی اول با صدا
+            document.getElementById('vid1').play(); 
         }, 600); 
     }
 
     function nextStep(current, next) {
-        // متوقف کردن ویدیوی مرحله قبل
         const currentVid = document.getElementById('vid' + current);
         if(currentVid) currentVid.pause();
 
         document.getElementById('step' + current).classList.add('hidden');
         document.getElementById('step' + next).classList.remove('hidden');
         
-        // پخش ویدیوی مرحله بعد
         const nextVid = document.getElementById('vid' + next);
         if(nextVid) nextVid.play();
         
@@ -162,7 +181,6 @@
         const card = document.getElementById('card');
         card.classList.add('shake');
         
-        // تغییر ویدیو به حالت مشکوک و مچ‌گیری
         const v1 = document.getElementById('vid1');
         v1.src = "postman_suspicious.mp4";
         v1.play();
@@ -175,16 +193,23 @@
     }
 
     function openGift() {
-        // افکت جذاب کنفتی/جشن
+        // پخش همزمان موزیک تولد در پس‌زمینه با صدای ملایم‌تر
+        const bdayMusic = document.getElementById('birthdayMusic');
+        bdayMusic.volume = 0.4; // تنظیم ولوم روی ۴۰ درصد که صدای ویدیو واضح بماند
+        bdayMusic.play().catch(e => console.log(e));
+
         confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
 
         setTimeout(() => {
+            document.getElementById('card').classList.add('hidden'); // مخفی کردن کل کارت سفید
             document.getElementById('step3').classList.add('hidden');
             document.getElementById('step4').classList.remove('hidden');
-            document.getElementById('vid4').play(); // پخش خودکار ویدیوی کمدی نهایی
             
-            // تکرار افکت جشن برای ۵ ثانیه بعدی
-            var duration = 5 * 1000;
+            const finalVid = document.getElementById('vid4');
+            finalVid.play(); // پخش ویدیوی کمدی نهایی با صدای خودش
+            
+            // افکت جشن مداوم
+            var duration = 6 * 1000;
             var end = Date.now() + duration;
             (function frame() {
                 confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 } });
