@@ -1,4 +1,4 @@
-        <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -48,19 +48,19 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            object-fit: contain; /* برای اینکه ویدیوی عمودی دفرمه نشود اما تمام صفحه را بگیرد */
+            object-fit: contain; /* تغییر به contain جهت جلوگیری از بریدگی ویدیوی عمودی */
             background: black;
             z-index: 9999;
         }
         .fullscreen-text {
             position: fixed;
-            bottom: 30px;
+            bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
-            color: white;
+            color: #fff;
             z-index: 10000;
-            font-size: 26px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            font-size: 28px;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.9);
             font-weight: bold;
             text-align: center;
             width: 100%;
@@ -139,21 +139,21 @@
     <video id="vid4" class="fullscreen-video" playsinline>
         <source src="surprise_comedy.mp4" type="video/mp4">
     </video>
-    <div class="fullscreen-text">Happy Birthday, my dearest! 🎂✨</div>
+    <div class="fullscreen-text">Happy Birthday, Saman! 🎂✨</div>
 </div>
 
 <script>
-    // قدم اول: شکستن قفل صدا و شروع افکت در زدن
+    // کلیک اول قفل صدا را کاملاً می‌شکند
     function unlockAudio() {
         document.getElementById('welcomeStep').classList.add('hidden');
         document.getElementById('card').classList.remove('hidden');
         
+        // پخش فوری صدای در زدن
         const knock = document.getElementById('knockSound');
-        knock.play().catch(e => console.log("Audio play blocked"));
+        knock.play().catch(e => console.log("Audio play blocked", e));
     }
 
     function startExperience() {
-        // قطع صدای در زدن و پخش صدای باز شدن در واقعی
         document.getElementById('knockSound').pause(); 
         document.getElementById('doorOpenSound').play();
         
@@ -193,22 +193,21 @@
     }
 
     function openGift() {
-        // پخش همزمان موزیک تولد در پس‌زمینه با صدای ملایم‌تر
+        // پخش موزیک تولد در پس‌زمینه با صدای ملایم
         const bdayMusic = document.getElementById('birthdayMusic');
-        bdayMusic.volume = 0.4; // تنظیم ولوم روی ۴۰ درصد که صدای ویدیو واضح بماند
+        bdayMusic.volume = 0.3; 
         bdayMusic.play().catch(e => console.log(e));
 
         confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
 
         setTimeout(() => {
-            document.getElementById('card').classList.add('hidden'); // مخفی کردن کل کارت سفید
+            document.getElementById('card').classList.add('hidden'); 
             document.getElementById('step3').classList.add('hidden');
             document.getElementById('step4').classList.remove('hidden');
             
             const finalVid = document.getElementById('vid4');
-            finalVid.play(); // پخش ویدیوی کمدی نهایی با صدای خودش
+            finalVid.play(); 
             
-            // افکت جشن مداوم
             var duration = 6 * 1000;
             var end = Date.now() + duration;
             (function frame() {
