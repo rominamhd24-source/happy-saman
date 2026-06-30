@@ -1,223 +1,480 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Package for You!</title>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0; 
-            overflow: hidden;
-        }
-        .container { 
-            background: white; 
-            padding: 25px; 
-            border-radius: 24px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.12); 
-            text-align: center; 
-            max-width: 500px; 
-            width: 90%; 
-            animation: popUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            z-index: 2;
-        }
-        @keyframes popUp {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .media-box { 
-            width: 100%; 
-            height: 280px; 
-            object-fit: cover; 
-            border-radius: 12px; 
-            background: #eee; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-        }
-        
-        /* استایل مخصوص تمام‌صفحه شدن ویدیوی عمودی آخر */
-        .fullscreen-video {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            object-fit: contain; /* تغییر به contain جهت جلوگیری از بریدگی ویدیوی عمودی */
-            background: black;
-            z-index: 9999;
-        }
-        .fullscreen-text {
-            position: fixed;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #fff;
-            z-index: 10000;
-            font-size: 28px;
-            text-shadow: 0 2px 12px rgba(0,0,0,0.9);
-            font-weight: bold;
-            text-align: center;
-            width: 100%;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>A Package for You!</title>
 
-        h2 { color: #333; margin: 20px 0; font-size: 20px; line-height: 1.4; min-height: 56px; }
-        .btn-group { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
-        button { 
-            padding: 14px 30px; font-size: 16px; border: none; border-radius: 12px; 
-            cursor: pointer; transition: all 0.2s ease; font-weight: bold; 
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+    *{
+        box-sizing:border-box;
+    }
+
+    body{
+        margin:0;
+        height:100vh;
+        overflow:hidden;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        background:linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%);
+        font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    }
+
+    .container{
+        width:90%;
+        max-width:500px;
+        background:white;
+        padding:25px;
+        border-radius:24px;
+        text-align:center;
+        box-shadow:0 15px 35px rgba(0,0,0,0.12);
+        animation:popup .6s cubic-bezier(.175,.885,.32,1.275);
+        position:relative;
+        z-index:2;
+    }
+
+    @keyframes popup{
+        from{
+            transform:scale(.8);
+            opacity:0;
         }
-        .btn-yes { background: linear-gradient(135deg, #4CAF50, #45a049); color: white; box-shadow: 0 4px 15px rgba(76,175,80,0.3); }
-        .btn-yes:hover { transform: translateY(-2px); }
-        .btn-no { background: linear-gradient(135deg, #f44336, #da190b); color: white; box-shadow: 0 4px 15px rgba(244,67,54,0.3); }
-        .btn-no:hover { transform: translateY(-2px); }
-        .btn-door { background: linear-gradient(135deg, #2196F3, #1976D2); color: white; box-shadow: 0 4px 15px rgba(33,150,243,0.3); width: 100%; }
-        .btn-door:hover { transform: scale(1.03); }
-        .hidden { display: none; }
-        .shake { animation: shake 0.5s; }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-10px); }
-            40%, 80% { transform: translateX(10px); }
+        to{
+            transform:scale(1);
+            opacity:1;
         }
-    </style>
+    }
+
+    .media-box{
+        width:100%;
+        height:280px;
+        object-fit:cover;
+        border-radius:14px;
+        background:#eee;
+        box-shadow:0 4px 10px rgba(0,0,0,.08);
+    }
+
+    .fullscreen-video{
+        position:fixed;
+        inset:0;
+        width:100vw;
+        height:100vh;
+        object-fit:contain;
+        background:black;
+        z-index:9999;
+    }
+
+    .fullscreen-text{
+        position:fixed;
+        bottom:40px;
+        left:50%;
+        transform:translateX(-50%);
+        width:100%;
+        text-align:center;
+        color:white;
+        font-size:28px;
+        font-weight:bold;
+        z-index:10000;
+        text-shadow:0 2px 12px rgba(0,0,0,.9);
+    }
+
+    h2{
+        color:#333;
+        margin:20px 0;
+        line-height:1.5;
+        min-height:60px;
+    }
+
+    p{
+        color:#666;
+    }
+
+    .btn-group{
+        display:flex;
+        justify-content:center;
+        gap:15px;
+        margin-top:15px;
+    }
+
+    button{
+        border:none;
+        cursor:pointer;
+        border-radius:12px;
+        padding:14px 28px;
+        font-size:16px;
+        font-weight:bold;
+        transition:.2s;
+    }
+
+    button:hover{
+        transform:translateY(-2px);
+    }
+
+    .btn-door{
+        width:100%;
+        color:white;
+        background:linear-gradient(135deg,#2196F3,#1976D2);
+        box-shadow:0 4px 15px rgba(33,150,243,.3);
+    }
+
+    .btn-yes{
+        color:white;
+        background:linear-gradient(135deg,#4CAF50,#45a049);
+        box-shadow:0 4px 15px rgba(76,175,80,.3);
+    }
+
+    .btn-no{
+        color:white;
+        background:linear-gradient(135deg,#f44336,#da190b);
+        box-shadow:0 4px 15px rgba(244,67,54,.3);
+    }
+
+    .hidden{
+        display:none;
+    }
+
+    .shake{
+        animation:shake .5s;
+    }
+
+    @keyframes shake{
+        0%,100%{
+            transform:translateX(0);
+        }
+        20%,60%{
+            transform:translateX(-10px);
+        }
+        40%,80%{
+            transform:translateX(10px);
+        }
+    }
+</style>
 </head>
+
 <body>
 
-<audio id="knockSound" loop><source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-84.mp3" type="audio/mp3"></audio>
-<audio id="doorOpenSound"><source src="https://assets.mixkit.co/active_storage/sfx/276/276-84.mp3" type="audio/mp3"></audio>
-<audio id="birthdayMusic" loop><source src="https://scummbar.com/mi2/MI1-CD/01%20-%20Opening%20Themes%20-%20Introduction.mp3" type="audio/mp3"></audio>
+<!-- AUDIO -->
+<!-- حتما فایل‌ها را کنار html قرار بده -->
+<audio id="knockSound" loop preload="auto" src="knock.mp3"></audio>
 
+<audio id="doorOpenSound" preload="auto" src="door-open.mp3"></audio>
+
+<audio id="birthdayMusic" loop preload="auto" src="birthday.mp3"></audio>
+
+
+<!-- WELCOME -->
 <div class="container" id="welcomeStep">
+
     <h2>You have a pending delivery! 📦</h2>
-    <p style="color: #666; margin-bottom: 20px;">Please click below to check your front door.</p>
-    <button class="btn-door" onclick="unlockAudio()">Enter Site 🔓</button>
+
+    <p>Please click below to check your front door.</p>
+
+    <button class="btn-door" onclick="unlockAudio()">
+        Enter Site 🔓
+    </button>
+
 </div>
 
+
+<!-- MAIN CARD -->
 <div class="container hidden" id="card">
+
+    <!-- STEP 0 -->
     <div id="step0">
-        <img src="door.png" class="media-box" alt="Wooden Door">
-        <h2>Someone is knocking on your screen... ✊🚪</h2>
-        <button class="btn-door" onclick="startExperience()">Open the Door 🚪</button>
+
+        <img src="door.png" class="media-box" alt="Door">
+
+        <h2>
+            Someone is knocking on your screen... ✊🚪
+        </h2>
+
+        <button class="btn-door" onclick="startExperience()">
+            Open the Door 🚪
+        </button>
+
     </div>
 
+
+    <!-- STEP 1 -->
     <div id="step1" class="hidden">
+
         <video id="vid1" class="media-box" playsinline>
             <source src="postman_name.mp4" type="video/mp4">
         </video>
-        <h2 id="text1">Hi there! Are you Saman?</h2>
+
+        <h2 id="text1">
+            Hi there! Are you Saman?
+        </h2>
+
         <div class="btn-group">
-            <button class="btn-yes" onclick="nextStep(1, 2)">Yes</button>
-            <button class="btn-no" onclick="wrongAnswer()">No</button>
+
+            <button class="btn-yes" onclick="nextStep(1,2)">
+                Yes
+            </button>
+
+            <button class="btn-no" onclick="wrongAnswer()">
+                No
+            </button>
+
         </div>
+
     </div>
 
+
+    <!-- STEP 2 -->
     <div id="step2" class="hidden">
+
         <video id="vid2" class="media-box" playsinline>
             <source src="postman_lastname.mp4" type="video/mp4">
         </video>
-        <h2>And your last name is Yaseri, right?</h2>
+
+        <h2>
+            And your last name is Yaseri, right?
+        </h2>
+
         <div class="btn-group">
-            <button class="btn-yes" onclick="nextStep(2, 3)">Yes</button>
+
+            <button class="btn-yes" onclick="nextStep(2,3)">
+                Yes
+            </button>
+
         </div>
+
     </div>
-    
+
+
+    <!-- STEP 3 -->
     <div id="step3" class="hidden">
-        <video id="vid3" class="media-box" playsinline style="cursor: pointer;" onclick="openGift()">
+
+        <video
+            id="vid3"
+            class="media-box"
+            playsinline
+            style="cursor:pointer"
+            onclick="openGift()"
+        >
             <source src="postman_delivery.mp4" type="video/mp4">
         </video>
-        <h2>Perfect! Here is your package. 📦<br><span style="font-size: 14px; color:#666; font-weight: normal;">Click the video to open!</span></h2>
+
+        <h2>
+            Perfect! Here is your package. 📦
+            <br>
+
+            <span style="font-size:14px;color:#666;font-weight:normal;">
+                Click the video to open!
+            </span>
+        </h2>
+
     </div>
+
 </div>
 
+
+<!-- FINAL SURPRISE -->
 <div id="step4" class="hidden">
+
     <video id="vid4" class="fullscreen-video" playsinline>
         <source src="surprise_comedy.mp4" type="video/mp4">
     </video>
-    <div class="fullscreen-text">Happy Birthday, Saman! 🎂✨</div>
+
+    <div class="fullscreen-text">
+        Happy Birthday, Saman! 🎂✨
+    </div>
+
 </div>
 
+
+
 <script>
-    // کلیک اول قفل صدا را کاملاً می‌شکند
-    function unlockAudio() {
-        document.getElementById('welcomeStep').classList.add('hidden');
-        document.getElementById('card').classList.remove('hidden');
-        
-        // پخش فوری صدای در زدن
+
+    // شکستن قفل صدا
+    function unlockAudio(){
+
+        document.getElementById('welcomeStep')
+            .classList.add('hidden');
+
+        document.getElementById('card')
+            .classList.remove('hidden');
+
         const knock = document.getElementById('knockSound');
-        knock.play().catch(e => console.log("Audio play blocked", e));
+
+        // برای اطمینان
+        knock.volume = 1;
+
+        knock.currentTime = 0;
+
+        // preload
+        knock.load();
+
+        // پلی واقعی
+        const playPromise = knock.play();
+
+        if(playPromise !== undefined){
+
+            playPromise
+                .then(() => {
+                    console.log("Knock sound playing");
+                })
+
+                .catch((err) => {
+                    console.log("Playback blocked:", err);
+
+                    alert(
+                        "Your browser blocked audio autoplay. Tap again."
+                    );
+                });
+        }
     }
 
-    function startExperience() {
-        document.getElementById('knockSound').pause(); 
-        document.getElementById('doorOpenSound').play();
-        
+
+
+    function startExperience(){
+
+        const knock = document.getElementById('knockSound');
+
+        knock.pause();
+
+        const door = document.getElementById('doorOpenSound');
+
+        door.currentTime = 0;
+
+        door.play();
+
         setTimeout(() => {
-            document.getElementById('step0').classList.add('hidden');
-            document.getElementById('step1').classList.remove('hidden');
-            document.getElementById('vid1').play(); 
-        }, 600); 
+
+            document.getElementById('step0')
+                .classList.add('hidden');
+
+            document.getElementById('step1')
+                .classList.remove('hidden');
+
+            const v1 = document.getElementById('vid1');
+
+            v1.play();
+
+        },600);
     }
 
-    function nextStep(current, next) {
-        const currentVid = document.getElementById('vid' + current);
-        if(currentVid) currentVid.pause();
 
-        document.getElementById('step' + current).classList.add('hidden');
-        document.getElementById('step' + next).classList.remove('hidden');
-        
-        const nextVid = document.getElementById('vid' + next);
-        if(nextVid) nextVid.play();
-        
-        document.getElementById('card').classList.remove('shake');
+
+    function nextStep(current,next){
+
+        const currentVid =
+            document.getElementById('vid'+current);
+
+        if(currentVid){
+            currentVid.pause();
+        }
+
+        document.getElementById('step'+current)
+            .classList.add('hidden');
+
+        document.getElementById('step'+next)
+            .classList.remove('hidden');
+
+        const nextVid =
+            document.getElementById('vid'+next);
+
+        if(nextVid){
+            nextVid.play();
+        }
+
+        document.getElementById('card')
+            .classList.remove('shake');
     }
 
-    function wrongAnswer() {
+
+
+    function wrongAnswer(){
+
         const card = document.getElementById('card');
+
         card.classList.add('shake');
-        
+
         const v1 = document.getElementById('vid1');
+
         v1.src = "postman_suspicious.mp4";
+
         v1.play();
-        
+
         const h2 = document.getElementById('text1');
-        h2.innerHTML = "Don't lie to me! 🕵️‍♂️ Click YES.";
-        h2.style.color = '#d32f2f';
-        
-        setTimeout(() => { card.classList.remove('shake'); }, 500);
-    }
 
-    function openGift() {
-        // پخش موزیک تولد در پس‌زمینه با صدای ملایم
-        const bdayMusic = document.getElementById('birthdayMusic');
-        bdayMusic.volume = 0.3; 
-        bdayMusic.play().catch(e => console.log(e));
+        h2.innerHTML =
+            "Don't lie to me! 🕵️‍♂️ Click YES.";
 
-        confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+        h2.style.color = "#d32f2f";
 
         setTimeout(() => {
-            document.getElementById('card').classList.add('hidden'); 
-            document.getElementById('step3').classList.add('hidden');
-            document.getElementById('step4').classList.remove('hidden');
-            
-            const finalVid = document.getElementById('vid4');
-            finalVid.play(); 
-            
-            var duration = 6 * 1000;
-            var end = Date.now() + duration;
-            (function frame() {
-                confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 } });
-                confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 } });
-                if (Date.now() < end) { requestAnimationFrame(frame); }
-            }());
-        }, 300);
+
+            card.classList.remove('shake');
+
+        },500);
     }
+
+
+
+    function openGift(){
+
+        const music =
+            document.getElementById('birthdayMusic');
+
+        music.volume = 0.3;
+
+        music.currentTime = 0;
+
+        music.play();
+
+        confetti({
+            particleCount:150,
+            spread:80,
+            origin:{ y:0.6 }
+        });
+
+        setTimeout(() => {
+
+            document.getElementById('card')
+                .classList.add('hidden');
+
+            document.getElementById('step4')
+                .classList.remove('hidden');
+
+            const finalVid =
+                document.getElementById('vid4');
+
+            finalVid.play();
+
+            let duration = 6000;
+
+            let end = Date.now() + duration;
+
+            (function frame(){
+
+                confetti({
+                    particleCount:3,
+                    angle:60,
+                    spread:55,
+                    origin:{ x:0 }
+                });
+
+                confetti({
+                    particleCount:3,
+                    angle:120,
+                    spread:55,
+                    origin:{ x:1 }
+                });
+
+                if(Date.now() < end){
+                    requestAnimationFrame(frame);
+                }
+
+            })();
+
+        },300);
+    }
+
 </script>
 
 </body>
-</html>
+    </html>
